@@ -1,138 +1,125 @@
 import Layout from "../components/Layout"
-import { db } from "../firebase"
 
-import {
-  collection,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore"
-
-import { useEffect, useState } from "react"
-
-import { useAuth } from "../context/AuthContext"
+import { motion } from "framer-motion"
 
 function Memory() {
 
-  const { user } = useAuth()
+  const observations = [
 
-  const [observations, setObservations] = useState([])
+    {
+      title: "Pleiades Cluster",
+      date: "May 8, 2026",
+      note: "Clear skies with excellent visibility."
+    },
 
-  useEffect(() => {
+    {
+      title: "Moon Observation",
+      date: "May 5, 2026",
+      note: "Captured waxing crescent details."
+    },
 
-    if (!user) return
-
-    const fetchObservations = async () => {
-
-      const q = query(
-        collection(db, "observations"),
-        where("uid", "==", user.uid),
-        orderBy("createdAt", "desc")
-      )
-
-      const querySnapshot = await getDocs(q)
-
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-
-      setObservations(data)
+    {
+      title: "ISS Flyover",
+      date: "May 2, 2026",
+      note: "Observed bright ISS pass above horizon."
     }
 
-    fetchObservations()
-
-  }, [user])
+  ]
 
   return (
+
     <Layout>
 
-      <section className="mb-32">
+      <motion.div
 
-        <h1 className="text-6xl font-light tracking-tight">
-          Sky Memory
-        </h1>
+        initial={{
+          opacity: 0,
+          y: 40
+        }}
 
-        <p className="mt-4 text-black/50 max-w-md leading-relaxed">
-          Your personal archive of celestial observations.
-        </p>
+        animate={{
+          opacity: 1,
+          y: 0
+        }}
 
-        {!user && (
+        transition={{
+          duration: 0.8
+        }}
 
-          <div className="mt-10 bg-white/60 rounded-[30px] p-8">
-            <p>Please sign in to view your observations 🌌</p>
-          </div>
+        className="p-10"
 
-        )}
+      >
 
-        <div className="mt-10 space-y-6">
+        {/* HERO */}
 
-          {observations.map((obs) => (
+        <div className="glass-card p-10 relative overflow-hidden">
 
-            <div
-              key={obs.id}
-              className="bg-white/60 rounded-[30px] p-6 shadow-sm border border-white/20"
-            >
+          <div className="absolute top-[-120px] right-[-100px] w-[300px] h-[300px] bg-purple-400/20 blur-[120px] rounded-full nebula-glow"></div>
 
-              <div className="flex justify-between items-start">
+          <p className="section-title">
+            Observation Archive
+          </p>
 
-                <div>
+          <h1 className="hero-title mt-6">
+            Sky
+            <br />
+            Memory
+          </h1>
 
-                  <p className="text-[10px] tracking-[0.3em] uppercase text-black/40">
-                    Observation
-                  </p>
-
-                  <h2 className="text-3xl font-light mt-3">
-                    {obs.object}
-                  </h2>
-
-                </div>
-
-                <div className="text-right">
-
-                  <p className="text-sm text-black/40">
-                    Sky Quality
-                  </p>
-
-                  <p className="text-2xl">
-                    {obs.skyQuality}
-                  </p>
-
-                </div>
-
-              </div>
-
-              <p className="mt-6 text-black/60 leading-relaxed italic">
-                {obs.notes}
-              </p>
-
-              <div className="flex gap-3 mt-6 flex-wrap">
-
-                <span className="bg-black text-white text-xs px-3 py-2 rounded-full">
-                  {obs.visibility}
-                </span>
-
-                <span className="bg-white text-black text-xs px-3 py-2 rounded-full">
-                  {obs.bortle}
-                </span>
-
-                <span className="bg-white text-black text-xs px-3 py-2 rounded-full">
-                  {obs.moon}
-                </span>
-
-              </div>
-
-            </div>
-
-          ))}
+          <p className="hero-subtext mt-6 max-w-2xl">
+            Your personal archive of celestial
+            observations and astronomy sessions.
+          </p>
 
         </div>
 
-      </section>
+        {/* MEMORY CARDS */}
+
+        <div className="grid md:grid-cols-3 gap-6 mt-10">
+
+          {
+
+            observations.map((item, index) => (
+
+              <motion.div
+
+                key={index}
+
+                whileHover={{
+                  y: -8,
+                  scale: 1.02
+                }}
+
+                className="info-card p-6"
+
+              >
+
+                <p className="section-title">
+                  {item.date}
+                </p>
+
+                <h2 className="text-3xl font-light mt-4">
+                  {item.title}
+                </h2>
+
+                <p className="hero-subtext mt-4">
+                  {item.note}
+                </p>
+
+              </motion.div>
+
+            ))
+
+          }
+
+        </div>
+
+      </motion.div>
 
     </Layout>
+
   )
+
 }
 
 export default Memory
