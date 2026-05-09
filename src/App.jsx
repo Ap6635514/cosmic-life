@@ -11,6 +11,7 @@ import {
 import Missions from "./pages/Missions"
 import SkyView from "./pages/SkyView"
 import Explorer from "./pages/Explorer"
+import Memory from "./pages/Memory"
 
 import LoadingScreen from "./components/LoadingScreen"
 
@@ -55,6 +56,11 @@ function App() {
         <Route
           path="/explorer"
           element={<Explorer />}
+        />
+
+        <Route
+          path="/memory"
+          element={<Memory />}
         />
 
       </Routes>
